@@ -1,3 +1,12 @@
+libvyosconfig0 (0.0.11) unstable; urgency=medium
+
+  * Correct rendering of nodes parsed as leaf nodes.
+  * Functions for checking if a node is leaf.
+  * A function for creating intermediate non-leaf nodes.
+  * Config diff functionality.
+
+ -- Daniil Baturin <daniil@baturin.org>  Thu, 26 Sep 2024 18:54:10 +0100
+
 libvyosconfig0 (0.0.10) unstable; urgency=medium
 
   * Expose JSON rendering functions.
