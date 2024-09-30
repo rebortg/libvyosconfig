@@ -53,6 +53,15 @@ let render_commands c_ptr op =
     | _ ->
             CT.render_commands ~op:CT.Set (Root.get c_ptr) []
 
+let create_node c_ptr path =
+    let ct = Root.get c_ptr in
+    let path = split_on_whitespace path in
+    try
+        let new_ct = CT.create_node ct path in
+        Root.set c_ptr new_ct;
+        0 (* return 0 *)
+    with CT.Useless_set -> 1
+
 let set_add_value c_ptr path value =
     let ct = Root.get c_ptr in
     let path = split_on_whitespace path in
@@ -117,6 +126,19 @@ let is_tag c_ptr path =
     let ct = Root.get c_ptr in
     let path = split_on_whitespace path in
     if (CT.is_tag ct path) then 1 else 0
+
+let set_leaf c_ptr path value =
+    let ct = Root.get c_ptr in
+    let path = split_on_whitespace path in
+    try
+        Root.set c_ptr (CT.set_leaf ct path value);
+        0 (* return 0 *)
+    with _ -> 1
+
+let is_leaf c_ptr path =
+    let ct = Root.get c_ptr in
+    let path = split_on_whitespace path in
+    CT.is_leaf ct path
 
 let get_subtree c_ptr path with_node =
     let ct = Root.get c_ptr in
@@ -234,6 +256,7 @@ struct
   let () = I.internal "to_json" ((ptr void) @-> returning string) render_json
   let () = I.internal "to_json_ast" ((ptr void) @-> returning string) render_json_ast
   let () = I.internal "to_commands" ((ptr void) @-> string @-> returning string) render_commands
+  let () = I.internal "create_node" ((ptr void) @-> string @-> returning int) create_node
   let () = I.internal "set_add_value" ((ptr void) @-> string @-> string @-> returning int) set_add_value
   let () = I.internal "set_replace_value" ((ptr void) @-> string @-> string @-> returning int) set_replace_value
   let () = I.internal "set_valueless" ((ptr void) @-> string @-> returning int) set_valueless
@@ -243,6 +266,8 @@ struct
   let () = I.internal "copy_node" ((ptr void) @-> string @-> string @-> returning int) copy_node
   let () = I.internal "set_tag" ((ptr void) @-> string @-> returning int) set_tag
   let () = I.internal "is_tag"	((ptr void) @->	string @-> returning int) is_tag
+  let () = I.internal "set_leaf" ((ptr void) @-> string @-> bool @-> returning int) set_leaf
+  let () = I.internal "is_leaf"  ((ptr void) @-> string @-> returning bool) is_leaf
   let () = I.internal "get_subtree" ((ptr void) @-> string @-> bool @-> returning (ptr void)) get_subtree
   let () = I.internal "exists"  ((ptr void) @-> string @-> returning int) exists
   let () = I.internal "list_nodes" ((ptr void) @-> string @-> returning string) list_nodes
