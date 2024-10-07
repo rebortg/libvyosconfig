@@ -114,11 +114,11 @@ let rename_node c_ptr path newname =
     Root.set c_ptr new_ct;
     0 (* return 0 *)
 
-let set_tag c_ptr path =
+let set_tag c_ptr path value =
     let ct = Root.get c_ptr in
     let path = split_on_whitespace path in
     try
-        Root.set c_ptr (CT.set_tag ct path true);
+        Root.set c_ptr (CT.set_tag ct path value);
         0 (* return 0 *)
     with _ -> 1
 
@@ -264,7 +264,7 @@ struct
   let () = I.internal "delete_node" ((ptr void) @-> string @-> returning int) delete_node
   let () = I.internal "rename_node" ((ptr void) @-> string @-> string @-> returning int) rename_node
   let () = I.internal "copy_node" ((ptr void) @-> string @-> string @-> returning int) copy_node
-  let () = I.internal "set_tag" ((ptr void) @-> string @-> returning int) set_tag
+  let () = I.internal "set_tag" ((ptr void) @-> string @-> bool @-> returning int) set_tag
   let () = I.internal "is_tag"	((ptr void) @->	string @-> returning int) is_tag
   let () = I.internal "set_leaf" ((ptr void) @-> string @-> bool @-> returning int) set_leaf
   let () = I.internal "is_leaf"  ((ptr void) @-> string @-> returning bool) is_leaf
